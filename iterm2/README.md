@@ -3,9 +3,23 @@
 wt opens one iTerm2 window per worktree, attached to that worktree's tmux session.
 `install.sh` adds a **`wt` profile** for those windows (a Dynamic Profile at
 `~/Library/Application Support/iTerm2/DynamicProfiles/wt.json`) and sets
-`"iterm_profile": "wt"` in `~/.config/wt/config.json`. The profile inherits
-everything from your Default profile, such as font, colors and size, and adds
-only these keys:
+`"iterm_profile": "wt"` in `~/.config/wt/config.json`. It inherits window size
+and other settings from your Default profile, and adds a theme, a font and keys.
+
+## Theme
+
+- **Colors:** [Catppuccin](https://catppuccin.com) **Mocha** in macOS dark mode
+  and **Latte** in light mode. The profile switches automatically ("Use separate
+  colors for light and dark mode"). The colors are copied from the official
+  [catppuccin/iterm](https://github.com/catppuccin/iterm) port (MIT).
+- **Font:** JetBrains Mono Nerd Font Mono, 13 pt. The Mono variant keeps icons
+  one cell wide, so TUIs stay aligned. `install.sh` installs it with Homebrew.
+- **tmux and the wt pickers** use the terminal's palette by color *name* (blue,
+  brightblack, default) rather than hex values, so they switch flavor along with iTerm2.
+- **Claude Code:** run `/theme` and pick **auto**, so it follows light and dark too.
+  A custom Catppuccin theme for Claude would be locked to one flavor.
+
+## Keys
 
 | Keys | Does in Claude Code / the shell | Sends |
 |---|---|---|

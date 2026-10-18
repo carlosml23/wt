@@ -339,12 +339,18 @@ def can_pick(opening):
     return bool(opening and sys.stdin.isatty() and sys.stdout.isatty() and shutil.which('fzf'))
 
 
+def fzf_env():
+    """wt's palette colors (from lib/common.sh) first, so the user's own fzf options still win."""
+    options = ' '.join(x for x in (os.environ.get('WT_FZF_COLORS'), os.environ.get('FZF_DEFAULT_OPTS')) if x)
+    return {**os.environ, 'FZF_DEFAULT_OPTS': options}
+
+
 def pick(rows, prompt, header):
     """fzf over {value: label}; returns the chosen value."""
     result = subprocess.run(['fzf', '--delimiter=\t', '--with-nth=2..', '--no-sort', f'--prompt={prompt} > ',
                              f'--header={header} (Esc to cancel)'],
                             input='\n'.join(value + '\t' + label for value, label in rows.items()) + '\n',
-                            text=True, stdout=subprocess.PIPE)
+                            text=True, stdout=subprocess.PIPE, env=fzf_env())
     if result.returncode in (1, 130):
         raise KeyboardInterrupt
     if result.returncode:

@@ -21,7 +21,7 @@ start_review() {
   printf '→ Fetching open PRs…\n' >&2
   rows="$(wt_backend prs)"
   [[ -n "$rows" ]] || { printf 'No open PRs.\n'; exit 0; }
-  selection="$(printf '%s\n' "$rows" | fzf --delimiter=$'\t' --with-nth=2.. \
+  selection="$(printf '%s\n' "$rows" | wt_fzf --delimiter=$'\t' --with-nth=2.. \
     --prompt='PR > ' --header='Pick a PR to review (Esc to cancel)')" \
     || { printf 'Cancelled.\n'; exit 0; }
   number="${selection%%$'\t'*}"
@@ -53,7 +53,7 @@ list="$idea_row
 $review_row"
 [[ -z "$issues" ]] || list="$list
 $issues"
-selection="$(printf '%s\n' "$list" | fzf --delimiter=$'\t' --with-nth=2.. \
+selection="$(printf '%s\n' "$list" | wt_fzf --delimiter=$'\t' --with-nth=2.. \
   --prompt='worktree > ' --header='Pick a Linear issue, new idea, or PR (Esc to cancel)')" \
   || { printf 'Cancelled.\n'; exit 0; }
 task_id="${selection%%$'\t'*}"

@@ -22,7 +22,7 @@ This repo holds three things:
 |---|---|
 | `wt/` | the tool (Bash + standard-library Python, tested) |
 | `tmux/tmux.conf` | tmux tuned for agents: `Ctrl-a` prefix, truecolor, Shift+Enter, mouse, 100k scrollback, clipboard, notifications |
-| `iterm2/` | the `wt` iTerm2 profile: ⌘⌫ / ⌥⌫ delete, ⌥↩ newline, ⌘← / ⌘→ through tmux ([details](iterm2/README.md)) |
+| `iterm2/` | the `wt` iTerm2 profile: Catppuccin Mocha/Latte (follows macOS light/dark), JetBrains Mono, and ⌘⌫ / ⌥⌫ delete, ⌥↩ newline, ⌘← / ⌘→ through tmux ([details](iterm2/README.md)) |
 
 ## Install
 
@@ -33,8 +33,8 @@ git clone https://github.com/carlosml23/wt.git ~/Documents/wt
 cd ~/Documents/wt && ./install.sh
 ```
 
-`install.sh` installs any missing `git fzf tmux gh python@3.12 iterm2` through
-Homebrew, copies `wt/` to `~/.local/share/wt`, writes `~/.local/bin/wt`,
+`install.sh` installs any missing `git fzf tmux gh python@3.12 iterm2` and
+JetBrains Mono Nerd Font through Homebrew, copies `wt/` to `~/.local/share/wt`, writes `~/.local/bin/wt`,
 installs `~/.tmux.conf`, and adds the `wt` iTerm2 profile. It backs up any existing file first, as
 `*.bak-<timestamp>`, and is safe to re-run. Pass `--no-tmux` to keep your own
 tmux config.
@@ -44,7 +44,8 @@ To update later, run `git pull && ./install.sh`.
 ## After installing
 
 1. **iTerm2:** turn on clipboard access (Settings → General → Selection → *Applications in terminal
-   may access clipboard*), or run `/terminal-setup` once in Claude Code. The key mappings are already installed.
+   may access clipboard*), or run `/terminal-setup` once in Claude Code. The theme and keys are already installed.
+   In Claude Code, run `/theme` and pick **auto** so it follows light and dark mode with the terminal.
 2. **GitHub:** run `gh auth login`.
 3. **Linear (optional):** create a personal API key (Linear → Settings → Security & access →
    Personal API keys) and add `export LINEAR_API_KEY=lin_api_...` to `~/.zshrc`.
@@ -76,6 +77,7 @@ Instructions for the agent:
    Never ask them to paste the key into the chat.
 5. Clipboard access in iTerm2 is the one GUI setting left (see `iterm2/README.md`); ask the
    user to turn it on. Tell them the keys the `wt` profile adds: ⌘⌫, ⌥⌫, ⌥↩, ⌘←/⌘→.
+   Suggest `/theme` → auto in Claude Code.
 6. Verify: run `"$(cat ~/.local/share/wt/lib/python.path)" -m unittest discover -s ~/.local/share/wt/tests`,
    then `wt doctor` inside one configured repo.
 

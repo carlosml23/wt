@@ -17,6 +17,9 @@ ITERM_PROFILE_NAME="wt"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 MIN_PYTHON_MINOR=11
 BREW_FORMULAS=(git fzf tmux gh)
+# The "wt" iTerm2 profile uses this font (PostScript name JetBrainsMonoNFM-Regular).
+FONT_CASK="font-jetbrains-mono-nerd-font"
+FONT_FILE="$HOME/Library/Fonts/JetBrainsMonoNerdFontMono-Regular.ttf"
 
 should_install_tmux=1
 should_use_brew=1
@@ -55,6 +58,11 @@ install_brew_packages() {
     [[ $should_use_brew -eq 1 ]] || die "iTerm2 is not installed"
     note "Installing iTerm2"
     brew install --cask iterm2
+  fi
+  if [[ ! -f "$FONT_FILE" && ! -f "/Library/Fonts/$(basename "$FONT_FILE")" ]]; then
+    [[ $should_use_brew -eq 1 ]] || die "JetBrains Mono Nerd Font is not installed (brew install --cask $FONT_CASK)"
+    note "Installing JetBrains Mono Nerd Font"
+    brew install --cask "$FONT_CASK"
   fi
 }
 
@@ -148,7 +156,7 @@ fi
 cat <<'EOF'
 
 ✓ Done. Remaining manual steps (see README.md → "After installing"):
-  1. iTerm2: turn on clipboard access (iterm2/README.md)
+  1. iTerm2: turn on clipboard access (iterm2/README.md); in Claude Code run /theme → auto
   2. gh auth login
   3. export LINEAR_API_KEY=... in ~/.zshrc (optional; ideas and PRs work without it)
   4. cd into a repo and run: wt doctor

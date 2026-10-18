@@ -369,6 +369,13 @@ class ApiAndInputs(unittest.TestCase):
             with self.assertRaises(KeyboardInterrupt):
                 wt.select_agent({}, args(), True)
 
+    def test_picker_colors_come_before_users_own_fzf_options(self):
+        selected = subprocess.CompletedProcess([], 0, 'codex\tCodex\n', '')
+        with patch.dict(os.environ, {'WT_FZF_COLORS': '--color=16', 'FZF_DEFAULT_OPTS': '--height=40%'}):
+            with patch.object(wt.subprocess, 'run', return_value=selected) as picker:
+                wt.pick(wt.AGENTS, 'agent', 'Which agent?')
+        self.assertEqual(picker.call_args.kwargs['env']['FZF_DEFAULT_OPTS'], '--color=16 --height=40%')
+
     def interactive(self):
         for item in (patch.object(wt.sys.stdin, 'isatty', return_value=True),
                      patch.object(wt.sys.stdout, 'isatty', return_value=True),
