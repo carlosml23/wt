@@ -1,0 +1,19 @@
+{
+  "agent": "claude",
+  "claude": { "model": "opus", "effort": "high" },
+  "iterm_profile": "Default",
+  "linear": { "token_env": "LINEAR_API_KEY" },
+  "repos": {
+    "/Users/you/Documents/your-repo": {
+      "base": "origin/staging",
+      "worktrees_dir": "/Users/you/Documents/your-repo-worktrees",
+      "env_files": [".env.local", "supabase/.env"],
+      "bootstrap": ["pnpm", "install"]
+    },
+    "/Users/you/Documents/other-repo": {
+      "env_files": [".env"],
+      "bootstrap": ["sh", "-c", "uv sync && npm ci --prefix web"],
+      "linear": { "token_env": "OTHER_LINEAR_API_KEY" }
+    }
+  }
+}
