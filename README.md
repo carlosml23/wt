@@ -21,8 +21,8 @@ This repo holds three things:
 | Path | What |
 |---|---|
 | `wt/` | the tool (Bash + standard-library Python, tested) |
-| `tmux/tmux.conf` | tmux tuned for agents: `Ctrl-a` prefix, truecolor, Shift+Enter, mouse, 100k scrollback, clipboard |
-| `iterm2/README.md` | the few iTerm2 settings the setup relies on |
+| `tmux/tmux.conf` | tmux tuned for agents: `Ctrl-a` prefix, truecolor, Shift+Enter, mouse, 100k scrollback, clipboard, notifications |
+| `iterm2/` | the `wt` iTerm2 profile: ⌘⌫ / ⌥⌫ delete, ⌥↩ newline, ⌘← / ⌘→ through tmux ([details](iterm2/README.md)) |
 
 ## Install
 
@@ -34,8 +34,8 @@ cd ~/Documents/wt && ./install.sh
 ```
 
 `install.sh` installs any missing `git fzf tmux gh python@3.12 iterm2` through
-Homebrew, copies `wt/` to `~/.local/share/wt`, writes `~/.local/bin/wt`, and
-installs `~/.tmux.conf`. It backs up any existing file first, as
+Homebrew, copies `wt/` to `~/.local/share/wt`, writes `~/.local/bin/wt`,
+installs `~/.tmux.conf`, and adds the `wt` iTerm2 profile. It backs up any existing file first, as
 `*.bak-<timestamp>`, and is safe to re-run. Pass `--no-tmux` to keep your own
 tmux config.
 
@@ -43,7 +43,8 @@ To update later, run `git pull && ./install.sh`.
 
 ## After installing
 
-1. **iTerm2:** follow [`iterm2/README.md`](iterm2/README.md) (about two minutes).
+1. **iTerm2:** turn on clipboard access (Settings → General → Selection → *Applications in terminal
+   may access clipboard*), or run `/terminal-setup` once in Claude Code. The key mappings are already installed.
 2. **GitHub:** run `gh auth login`.
 3. **Linear (optional):** create a personal API key (Linear → Settings → Security & access →
    Personal API keys) and add `export LINEAR_API_KEY=lin_api_...` to `~/.zshrc`.
@@ -62,7 +63,8 @@ Instructions for the agent:
 
 1. Clone the repo to `~/Documents/wt` (or `git pull` if it is already there) and run `./install.sh`.
    If `~/.tmux.conf` already exists, show the user the diff against `tmux/tmux.conf`
-   and ask before replacing it; use `--no-tmux` to keep theirs.
+   and ask before replacing it; use `--no-tmux` to keep theirs. In that case, merge in its
+   `extended-keys`, `allow-passthrough` and `user-keys` lines, which the `wt` iTerm2 profile depends on.
 2. Make sure `~/.local/bin` is on `PATH` in `~/.zshrc`.
 3. Ask the user which repos they will use `wt` in. For each one, read the repo to
    find its base branch (e.g. `origin/staging` if PRs target staging), its
@@ -72,8 +74,8 @@ Instructions for the agent:
 4. Check `gh auth status`. If they are not logged in, ask the user to run `! gh auth login`.
    Ask whether they use Linear; if so, have them add `LINEAR_API_KEY` to `~/.zshrc` themselves.
    Never ask them to paste the key into the chat.
-5. Walk the user through the iTerm2 steps in `iterm2/README.md`. They are GUI settings,
-   so the user clicks them.
+5. Clipboard access in iTerm2 is the one GUI setting left (see `iterm2/README.md`); ask the
+   user to turn it on. Tell them the keys the `wt` profile adds: ⌘⌫, ⌥⌫, ⌥↩, ⌘←/⌘→.
 6. Verify: run `"$(cat ~/.local/share/wt/lib/python.path)" -m unittest discover -s ~/.local/share/wt/tests`,
    then `wt doctor` inside one configured repo.
 

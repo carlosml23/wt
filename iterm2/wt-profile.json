@@ -1,0 +1,20 @@
+{
+  "Profiles": [
+    {
+      "Name": "wt",
+      "Guid": "039B8043-EC4F-45F8-B34B-7DBC79793E06",
+      "Dynamic Profile Parent Name": "Default",
+      "Keyboard Map": {
+        "0xf702-0x300000": { "Action": 10, "Text": "[1;9001~" },
+        "0xf703-0x300000": { "Action": 10, "Text": "[1;9002~" },
+        "0xf702-0x280000": { "Action": 10, "Text": "b" },
+        "0xf703-0x280000": { "Action": 10, "Text": "f" },
+        "0x7f-0x100000": { "Action": 11, "Text": "0x15" },
+        "0x7f-0x80000": { "Action": 11, "Text": "0x1b 0x7f" },
+        "0xf728-0x0": { "Action": 11, "Text": "0x4" },
+        "0xf728-0x80000": { "Action": 10, "Text": "d" },
+        "0xd-0x80000": { "Action": 11, "Text": "0x1b 0xd" }
+      }
+    }
+  ]
+}

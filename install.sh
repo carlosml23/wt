@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install wt, the tmux config and the iTerm2 prerequisites on macOS.
+# Install wt, the tmux config and the "wt" iTerm2 profile on macOS.
 # Safe to re-run: anything it would replace is backed up first.
 #
 #   ./install.sh              everything
@@ -12,6 +12,8 @@ INSTALL_DIR="$HOME/.local/share/wt"
 BIN_DIR="$HOME/.local/bin"
 CONFIG_FILE="$HOME/.config/wt/config.json"
 TMUX_CONF="$HOME/.tmux.conf"
+ITERM_PROFILE_DIR="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
+ITERM_PROFILE_NAME="wt"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 MIN_PYTHON_MINOR=11
 BREW_FORMULAS=(git fzf tmux gh)
@@ -94,6 +96,32 @@ install_wt() {
   esac
 }
 
+# iTerm2 loads Dynamic Profiles live; wt opens its windows with this one.
+install_iterm_profile() {
+  local python
+  mkdir -p "$ITERM_PROFILE_DIR"
+  cp "$REPO_DIR/iterm2/wt-profile.json" "$ITERM_PROFILE_DIR/wt.json"
+  note "Installed the \"$ITERM_PROFILE_NAME\" iTerm2 profile"
+  python="$(find_python)" || die "Python 3.$MIN_PYTHON_MINOR+ not found"
+  "$python" -I - "$CONFIG_FILE" "$ITERM_PROFILE_NAME" <<'PY'
+import json, os, sys
+path, name = sys.argv[1], sys.argv[2]
+with open(path) as stream:
+    config = json.load(stream)
+current = config.get('iterm_profile')
+if current not in (None, name):
+    print(f'→ Keeping "iterm_profile": "{current}" in {path}; set it to "{name}" for the wt key mappings')
+    sys.exit()
+if current is None:
+    temporary = path + '.tmp'
+    with open(temporary, 'w') as stream:
+        json.dump({**config, 'iterm_profile': name}, stream, indent=2)
+        stream.write('\n')
+    os.replace(temporary, path)
+    print(f'→ Set "iterm_profile": "{name}" in {path}')
+PY
+}
+
 install_tmux_conf() {
   if [[ -f "$TMUX_CONF" ]] && cmp -s "$REPO_DIR/tmux/tmux.conf" "$TMUX_CONF"; then
     note "$TMUX_CONF already up to date"
@@ -110,12 +138,17 @@ install_tmux_conf() {
 [[ "$(uname -s)" == Darwin ]] || die "wt drives iTerm2, so it needs macOS"
 install_brew_packages
 install_wt
-[[ $should_install_tmux -eq 0 ]] || install_tmux_conf
+install_iterm_profile
+if [[ $should_install_tmux -eq 1 ]]; then
+  install_tmux_conf
+else
+  note "Kept your ~/.tmux.conf: copy the user-keys lines from tmux/tmux.conf so ⌘←/⌘→ work"
+fi
 
 cat <<'EOF'
 
 ✓ Done. Remaining manual steps (see README.md → "After installing"):
-  1. iTerm2 settings (iterm2/README.md) and `/terminal-setup` inside Claude Code
+  1. iTerm2: turn on clipboard access (iterm2/README.md)
   2. gh auth login
   3. export LINEAR_API_KEY=... in ~/.zshrc (optional; ideas and PRs work without it)
   4. cd into a repo and run: wt doctor
